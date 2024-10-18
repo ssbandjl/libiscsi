@@ -96,3 +96,24 @@ static iscsi_transport iscsi_transport_tcp = {
 
 iscsi_service
     iscsi->drv->service(iscsi, revents)
+
+
+
+
+iscsi_read16_task
+    scsi_cdb_read16
+        task->cdb[0]   = SCSI_OPCODE_READ16
+        scsi_set_uint32(&task->cdb[2], lba >> 32)
+        scsi_set_uint32(&task->cdb[6], lba & 0xffffffff)
+        scsi_set_uint32(&task->cdb[10], xferlen/blocksize)
+    iscsi_scsi_command_async
+
+
+
+bdev_iscsi_readv
+	task = iscsi_read16_task(lun->context, lun->lun_id, lba, nbytes, lun->bdev.blocklen, 0, 0, 0, 0, 0, bdev_iscsi_command_cb, iscsi_io)
+	scsi_task_add_data_in_buffer(task, iov[i].iov_len, iov[i].iov_base)
+
+
+
+
