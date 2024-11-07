@@ -131,3 +131,13 @@ libiscsi:3 TCP_KEEPIDLE set to 30 [iqn.2024-10.com:target-nvme0n1p4]
 libiscsi:3 TCP_NODELAY set to 1 [iqn.2024-10.com:target-nvme0n1p4]
 
 
+retry:
+reconnect_max_retries
+
+
+
+iscsi_reconnect_cb
+	if (status != SCSI_STATUS_GOOD)
+		int backoff = ++iscsi->old_iscsi->retry_cnt
+		backoff += rand() % 10
+		ISCSI_LOG(iscsi, 1, "reconnect try %d failed, waiting %d seconds", iscsi->old_iscsi->retry_cnt, backoff)
